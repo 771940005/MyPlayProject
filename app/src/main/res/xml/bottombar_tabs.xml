@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <tab
+        icon="@mipmap/ic_bottom_home_icon"
+        id="@+id/tab_home"
+        title="首页" />
+
+    <tab
+        icon="@mipmap/ic_bottom_mv_unselect"
+        id="@+id/tab_mv"
+        title="MV" />
+
+    <tab
+        icon="@mipmap/ic_bottom_vlist_unselect"
+        id="@+id/tab_vbang"
+        title="V榜" />
+
+    <tab
+        icon="@mipmap/ic_bottom_mvlist_unselect"
+        id="@+id/tab_yuedan"
+        title="悦单" />
+
+</PreferenceScreen>

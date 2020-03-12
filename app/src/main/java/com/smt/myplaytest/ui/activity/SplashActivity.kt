@@ -10,9 +10,9 @@ import kotlinx.android.synthetic.main.activity_splash.*
 
 /**
  *@author hjy
- *Description: 启动页
+ *Description:
+ * 启动页
  */
-@SuppressLint("Registered")
 class SplashActivity : BaseActivity(), ViewPropertyAnimatorListener {
     override fun onAnimationEnd(view: View?) {
         startActivityAndFinish<MainActivity>()
