@@ -4,13 +4,10 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <include layout="@layout/toolbar" />
-
-    <fragment
-        android:id="@+id/setting_fragment"
-        class="com.smt.myplaytest.ui.fragment.SettingFragment"
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="这是一款测试软件" />
 
 </LinearLayout>

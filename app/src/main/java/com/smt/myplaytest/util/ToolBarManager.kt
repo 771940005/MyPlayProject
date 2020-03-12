@@ -42,4 +42,9 @@ interface ToolBarManager {
 //            true
 //        }
     }
+
+
+    fun initSettingTooBar() {
+        toobar.title = "设置界面"
+    }
 }
