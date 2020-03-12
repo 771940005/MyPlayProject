@@ -22,12 +22,12 @@ abstract class BaseActivity : AppCompatActivity(), AnkoLogger {
     }
 
     // 初始化数据
-    open protected fun initData() {
+    protected open fun initData() {
 
     }
 
     // 控件布局
-    open protected fun initListener() {
+    protected open fun initListener() {
 
     }
 
