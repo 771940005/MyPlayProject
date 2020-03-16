@@ -1,30 +1,35 @@
 package com.smt.myplaytest.ui.activity
 
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import com.smt.myplaytest.R
 import com.smt.myplaytest.base.BaseActivity
+import com.smt.myplaytest.util.FragmentUtil
 import com.smt.myplaytest.util.ToolBarManager
-import org.jetbrains.anko.find
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), ToolBarManager {
 
-    override var toobar: Toolbar
-        get() = find<Toolbar>(R.id.toolbar)
-        set(value) {}
-
     // 惰性加载
-    //override var toolbar: Toolbar by lazy {find<Toolbar>(R.id.toolbar) }
+    override val toobar: Toolbar by lazy { findViewById<Toolbar>(R.id.toolbar) }
+
 
     override fun getLayoutId(): Int {
         return R.layout.activity_main
     }
 
     override fun initData() {
-
+        initMainToolBar()
     }
 
     override fun initListener() {
-        initMainToolBar()
 
+        // 设置tab切换监听
+        bottomBar.setOnTabSelectListener{
+            // it代表参数tabId
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.container, FragmentUtil.fragmentUtil.getFragment(it)!!,it.toString())
+            transaction.commit()
+        }
     }
 }

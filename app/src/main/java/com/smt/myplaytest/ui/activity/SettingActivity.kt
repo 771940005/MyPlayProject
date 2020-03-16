@@ -10,7 +10,6 @@ import com.smt.myplaytest.util.ToolBarManager
  *@author hjy
  *Description:
  */
-@Suppress("DEPRECATION")
 class SettingActivity : BaseActivity(), ToolBarManager {
 
     override val toobar by lazy { findViewById<Toolbar>(R.id.toolbar) }
