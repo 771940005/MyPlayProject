@@ -44,12 +44,12 @@ abstract class BaseFragment : Fragment(), AnkoLogger {
     }
 
     // 数据初始化
-    private fun initData() {
+    open fun initData() {
 
     }
 
     // adapter listtener
-    private fun initListener() {
+    open fun initListener() {
 
     }
 

@@ -1,10 +1,11 @@
 package com.smt.myplaytest.ui.fragment
 
-import android.graphics.Color
-import android.view.Gravity
 import android.view.View
-import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.smt.myplaytest.R
+import com.smt.myplaytest.adapter.HomeAdapter
 import com.smt.myplaytest.base.BaseFragment
+import kotlinx.android.synthetic.main.fragment_home.*
 
 /**
  *@author hjy
@@ -13,11 +14,16 @@ import com.smt.myplaytest.base.BaseFragment
 
 class HomeFragment : BaseFragment() {
     override fun initView(): View? {
-        val tv = TextView(context)
-        tv.gravity = Gravity.CENTER
-        tv.setTextColor(Color.RED)
-        tv.text = javaClass.simpleName
-        return tv
+        return View.inflate(context, R.layout.fragment_home, null)
+    }
+
+    override fun initListener() {
+        // 初始化recycleview
+        homeRecyclerView.layoutManager = LinearLayoutManager(context)
+        // 适配
+        val adapter = HomeAdapter()
+        homeRecyclerView.adapter = adapter
+
     }
 
 }

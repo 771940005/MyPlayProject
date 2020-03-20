@@ -38,4 +38,5 @@ dependencies {
 
     // bottom-bar
     implementation 'com.roughike:bottom-bar:2.3.1'
+    implementation 'androidx.cardview:cardview:1.0.0'
 }

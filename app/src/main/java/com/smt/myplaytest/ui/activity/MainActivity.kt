@@ -1,7 +1,6 @@
 package com.smt.myplaytest.ui.activity
 
 import androidx.appcompat.widget.Toolbar
-import androidx.fragment.app.Fragment
 import com.smt.myplaytest.R
 import com.smt.myplaytest.base.BaseActivity
 import com.smt.myplaytest.util.FragmentUtil
@@ -25,10 +24,14 @@ class MainActivity : BaseActivity(), ToolBarManager {
     override fun initListener() {
 
         // 设置tab切换监听
-        bottomBar.setOnTabSelectListener{
+        bottomBar.setOnTabSelectListener {
             // it代表参数tabId
             val transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.container, FragmentUtil.fragmentUtil.getFragment(it)!!,it.toString())
+            transaction.replace(
+                R.id.container,
+                FragmentUtil.fragmentUtil.getFragment(it)!!,
+                it.toString()
+            )
             transaction.commit()
         }
     }
