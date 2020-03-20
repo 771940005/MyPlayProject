@@ -2,11 +2,13 @@ package com.smt.myplaytest.util;
 
 import android.util.Log;
 
+/**
+ * api工具类
+ */
 public class URLProviderUtils {
 
     /**
      * 获取首页的url
-     *
      * @param offset 数据偏移量
      * @param size   返回数据的条目个数
      * @return url
