@@ -41,5 +41,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     // okhttp
     implementation 'com.squareup.okhttp3:okhttp:3.8.1'
+    // gson
+    implementation 'com.google.code.gson:gson:2.2.4'
 
 }

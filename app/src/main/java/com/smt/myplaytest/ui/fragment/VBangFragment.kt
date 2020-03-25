@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
+import com.smt.myplaytest.R
 import com.smt.myplaytest.base.BaseFragment
 
 /**
@@ -13,11 +14,6 @@ import com.smt.myplaytest.base.BaseFragment
 
 class VBangFragment : BaseFragment() {
     override fun initView(): View? {
-        val tv = TextView(context)
-        tv.gravity = Gravity.CENTER
-        tv.setTextColor(Color.RED)
-        tv.text = javaClass.simpleName
-        return tv
+        return View.inflate(context, R.layout.fragment_vbang,null)
     }
-
 }
