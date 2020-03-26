@@ -7,8 +7,8 @@ import android.database.Cursor
  */
 object CursorUtil {
 
-    fun logCursor(cursor: Cursor) {
-        cursor.let {
+    fun logCursor(cursor: Cursor?) {
+        cursor?.let {
             // cursor游标复位
             it.moveToPosition(-1)
             while (it.moveToNext()) {
