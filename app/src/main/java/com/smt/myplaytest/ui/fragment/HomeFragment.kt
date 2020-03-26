@@ -2,12 +2,9 @@ package com.smt.myplaytest.ui.fragment
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.smt.myplaytest.R
 import com.smt.myplaytest.adapter.HomeAdapter
 import com.smt.myplaytest.base.BaseFragment
-import com.smt.myplaytest.model.HomeItemBean
 import com.smt.myplaytest.util.URLProviderUtils
 import kotlinx.android.synthetic.main.fragment_home.*
 import okhttp3.*
@@ -51,10 +48,10 @@ class HomeFragment : BaseFragment() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                myToast("获取数据成功")
-                val result = response.body()?.string()
+//                myToast("获取数据成功")
+               // val result = response.body()?.string()
 
-                println("获取数据成功: $result")
+//                println("获取数据成功: $result")
 
             }
         })
