@@ -19,7 +19,7 @@ abstract class BaseFragment : Fragment(), AnkoLogger {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         init()
-        debug {  }
+        debug { }
     }
 
     // fragment 的初始化
@@ -39,9 +39,9 @@ abstract class BaseFragment : Fragment(), AnkoLogger {
     // 获取布局view
     abstract fun initView(): View?
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        initListener()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initListener(view)
         initData()
     }
 
@@ -51,7 +51,7 @@ abstract class BaseFragment : Fragment(), AnkoLogger {
     }
 
     // adapter listtener
-    open fun initListener() {
+    open fun initListener(view: View) {
 
     }
 
