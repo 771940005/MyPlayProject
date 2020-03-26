@@ -1,6 +1,8 @@
 package com.smt.myplaytest.ui.fragment
 
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.AsyncQueryHandler
 import android.content.ContentResolver
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -76,7 +78,26 @@ class VBangFragment : BaseFragment() {
 //            }
 //
 //        }).start()
-        AudioTask().execute(resolver)
+//        AudioTask().execute(resolver)
+
+        val handler = @SuppressLint("HandlerLeak")
+        object : AsyncQueryHandler(resolver) {
+            override fun onQueryComplete(token: Int, cookie: Any?, cursor: Cursor?) {
+                // 查询完成回调  主线程
+                // 打印cursor
+                CursorUtil.logCursor(cursor)
+            }
+        }
+        // 开始查询
+        handler.startQuery(
+            0, null, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+            arrayOf(
+                MediaStore.Audio.Media.DATA,
+                MediaStore.Audio.Media.SIZE,
+                MediaStore.Audio.Media.DISPLAY_NAME,
+                MediaStore.Audio.Media.ARTIST
+            ), null, null, null
+        )
     }
 
 
