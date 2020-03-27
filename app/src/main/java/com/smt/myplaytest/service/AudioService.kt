@@ -29,14 +29,19 @@ class AudioService : Service() {
 
         // 开始播放音乐
         binder.playItem()
-        return super.onStartCommand(intent, flags, startId)
+
+        // START_STICKY  粘性的 service强制杀死后 会尝试重新启动service  不会传递原来的intent(null)
+        // START_NOT_STICKY 非粘性的 service强制杀死后  不会尝试重新启动service
+        // START_REDELIVER_INTENT  粘性的 service强制杀死后 会尝试重新启动service  会传递原来的intent
+        // START_REDELIVER_INTENT 太流氓  国产手机将其源码修改 作用和START_NOT_STICKY一样
+        return START_NOT_STICKY
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return binder
     }
 
-    inner class AudioBinder : Binder(),Iservice, MediaPlayer.OnPreparedListener {
+    inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener {
 
         override fun onPrepared(mp: MediaPlayer?) {
             mediaPlayer?.start()
