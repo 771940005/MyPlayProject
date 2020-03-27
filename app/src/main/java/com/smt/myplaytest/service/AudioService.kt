@@ -204,6 +204,13 @@ class AudioService : Service() {
         }
 
         fun playItem() {
+            // 如果mediaPlayer已经存在就先释放掉
+            if (mediaPlayer != null) {
+                mediaPlayer?.reset()
+                mediaPlayer?.release()
+                mediaPlayer = null
+            }
+
             mediaPlayer = MediaPlayer()
             mediaPlayer?.let {
                 it.setOnPreparedListener(this)
