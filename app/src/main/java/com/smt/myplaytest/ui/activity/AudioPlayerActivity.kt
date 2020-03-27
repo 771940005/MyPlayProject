@@ -16,6 +16,7 @@ import com.smt.myplaytest.model.AudioBean
 import com.smt.myplaytest.service.AudioService
 import com.smt.myplaytest.service.Iservice
 import com.smt.myplaytest.util.StringUtil
+import com.smt.myplaytest.widget.PlayListPopWindow
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_music_player_bottom.*
 import kotlinx.android.synthetic.main.activity_music_player_middle.*
@@ -59,6 +60,9 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         // 上一曲和下一曲
         pre.setOnClickListener(this)
         next.setOnClickListener(this)
+
+        // 播放列表
+        playlist.setOnClickListener(this)
     }
 
 
@@ -95,9 +99,20 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
             R.id.mode -> updatePlayMode()
             R.id.pre -> iService?.playPre()
             R.id.next -> iService?.playNext()
+            R.id.playlist -> showPlayList()
         }
-
     }
+
+    /**
+     * 显示播放列表
+     */
+    private fun showPlayList() {
+        // 获取底部高度
+        val bottomH = audio_player_bottom.height
+        val popWindow = PlayListPopWindow(this)
+        popWindow.showAsDropDown(audio_player_bottom,0,-bottomH)
+    }
+
 
     /**
      * 更新播放模式
