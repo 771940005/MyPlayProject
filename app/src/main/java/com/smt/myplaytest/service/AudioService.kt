@@ -17,7 +17,7 @@ import kotlin.random.Random
 class AudioService : Service() {
 
     var list: ArrayList<AudioBean>? = null
-    var position: Int = 0
+    var position: Int = -2  // 正在播放的position
     var mediaPlayer: MediaPlayer? = null
     private val binder by lazy { AudioBinder() }
 
@@ -37,17 +37,21 @@ class AudioService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // 获取集合以及position
-        list = intent?.getParcelableArrayListExtra<AudioBean>("list")
-        position = intent?.getIntExtra("position", -1) ?: -1
+        val pos = intent?.getIntExtra("position", -1) ?: -1  // 想要播放的position
+        if (pos != position) {
+            // 想要播放的条目 和 正在播放条目 不是同一首
+            position = pos
 
-        // 开始播放音乐
-        binder.playItem()
+            // 获取集合以及position
+            list = intent?.getParcelableArrayListExtra<AudioBean>("list")
 
-        // START_STICKY  粘性的 service强制杀死后 会尝试重新启动service  不会传递原来的intent(null)
-        // START_NOT_STICKY 非粘性的 service强制杀死后  不会尝试重新启动service
-        // START_REDELIVER_INTENT  粘性的 service强制杀死后 会尝试重新启动service  会传递原来的intent
-        // START_REDELIVER_INTENT 太流氓  国产手机将其源码修改 作用和START_NOT_STICKY一样
+            // 开始播放音乐
+            binder.playItem()
+        } else {
+            // 主动通知界面更新
+            binder.notifyUpdateUi()
+        }
+
         return START_NOT_STICKY
     }
 
@@ -198,7 +202,7 @@ class AudioService : Service() {
         /**
          * 通知界面更新
          */
-        private fun notifyUpdateUi() {
+        fun notifyUpdateUi() {
             // 发送端
             EventBus.getDefault().post(list?.get(position))
         }

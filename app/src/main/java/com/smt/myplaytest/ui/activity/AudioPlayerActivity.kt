@@ -238,11 +238,12 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         val intent = intent
         intent.setClass(this, AudioService::class.java)
 
-        // 开启服务
+        // 先绑定服务
+        bindService(intent, conn, Context.BIND_AUTO_CREATE)
+
+        // 再开启服务
         startService(intent)
 
-        // 绑定服务
-        bindService(intent, conn, Context.BIND_AUTO_CREATE)
     }
 
     var iService: Iservice? = null
