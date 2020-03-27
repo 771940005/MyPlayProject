@@ -28,12 +28,13 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
 
     private val conn by lazy { AudioConnection() }
 
-    var audioBean: AudioBean? = null
+    private var audioBean: AudioBean? = null
     var drawable: AnimationDrawable? = null
-    var duration: Int = 0
-    var handler = object : Handler() {
+    private var duration: Int = 0
+    private var handler = @SuppressLint("HandlerLeak")
+    object : Handler() {
         override fun handleMessage(msg: Message) {
-            when (msg?.what) {
+            when (msg.what) {
                 MSG_PROGRESS -> startUpdateProgress()
             }
         }
@@ -190,6 +191,9 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
 
         // 更新播放进度
         startUpdateProgress()
+
+        // 更新播放模式图标
+        updatePlayModeBtn()
 
     }
 

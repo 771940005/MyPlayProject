@@ -1,6 +1,7 @@
 package com.smt.myplaytest.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Binder
@@ -27,9 +28,11 @@ class AudioService : Service() {
 
     var mode = MODE_ALL // 播放模式
 
+    val sp by lazy { getSharedPreferences("config", Context.MODE_PRIVATE) }
     override fun onCreate() {
         super.onCreate()
-
+        // 获取播放模式
+        mode = sp.getInt("mode", 1)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -70,6 +73,8 @@ class AudioService : Service() {
                 MODE_SINGLE -> mode = MODE_RANDOM
                 MODE_RANDOM -> mode = MODE_ALL
             }
+            // 保存播放模式
+            sp.edit().putInt("mode", mode).apply()
         }
 
         /**
