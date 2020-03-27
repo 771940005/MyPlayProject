@@ -45,18 +45,32 @@ class AudioService : Service() {
     inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener {
 
         /**
+         * 获取当前的进度
+         */
+        override fun getProgress(): Int {
+            return mediaPlayer?.currentPosition ?: 0
+        }
+
+        /**
+         * 获取总进度
+         */
+        override fun getDuration(): Int {
+            return mediaPlayer?.duration ?: 0
+        }
+
+        /**
          * 更新播放状态
          */
         override fun updatePlayState() {
             // 获取当前播放状态
-            val isPlaying =isPlaying()
+            val isPlaying = isPlaying()
 
             // 切换播放状态
             isPlaying?.let {
-                if (isPlaying){
+                if (isPlaying) {
                     // 播放 -> 暂停
                     mediaPlayer?.pause()
-                }else{
+                } else {
                     // 暂停 -> 播放
                     mediaPlayer?.start()
                 }
@@ -78,7 +92,7 @@ class AudioService : Service() {
         /**
          * 通知界面更新
          */
-        private fun notifyUpdateUi(){
+        private fun notifyUpdateUi() {
             // 发送端
             EventBus.getDefault().post(list?.get(position))
         }
