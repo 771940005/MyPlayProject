@@ -45,6 +45,13 @@ class AudioService : Service() {
     inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener {
 
         /**
+         * 跳转到当前进度播放
+         */
+        override fun seekTo(progress: Int) {
+            mediaPlayer?.seekTo(progress)
+        }
+
+        /**
          * 获取当前的进度
          */
         override fun getProgress(): Int {

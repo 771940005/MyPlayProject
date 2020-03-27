@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Message
 import android.view.View
+import android.widget.SeekBar
 import com.smt.myplaytest.R
 import com.smt.myplaytest.base.BaseActivity
 import com.smt.myplaytest.model.AudioBean
@@ -23,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_music_player_top.*
 /**
  * 描述:
  */
-class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
+class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private val conn by lazy { AudioConnection() }
 
@@ -44,11 +45,41 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun initListener() {
+        back.setOnClickListener { finish() }
         // 播放状态切换
         state.setOnClickListener(this)
 
-        back.setOnClickListener { finish() }
+        // 进度条变化监听
+        progress_sk.setOnSeekBarChangeListener(this)
     }
+
+
+    /**
+     * 进度改变回调
+     * @param progress 改变之后的进度
+     * @param fromUser true通过用户手指拖动改变进度  false通过代码方式改变进度
+     */
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        // 判断是否是用户操作
+        if (!fromUser) return
+        // 更新播放进度
+        iService?.seekTo(progress)
+        // 更新界面进度显示
+        updateProgress(progress)
+    }
+
+    /**
+     * 手指触摸seekbar回调
+     */
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+    }
+
+    /**
+     * 手指离开seekbar回调
+     */
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+    }
+
 
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -83,11 +114,15 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
                 state.setImageResource(R.drawable.selector_btn_audio_play)
                 // 开始播放动画
                 drawable?.start()
+                // 开始更新进度
+                handler.sendEmptyMessage(MSG_PROGRESS)
             } else {
                 // 暂停
                 state.setImageResource(R.drawable.selector_btn_audio_pause)
                 // 停止播放动画
                 drawable?.stop()
+                // 停止更新进度
+                handler.removeMessages(MSG_PROGRESS)
             }
         }
 
@@ -115,6 +150,10 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
 
         // 获取总进度
         duration = iService?.getDuration() ?: 0
+
+        // 进度条设置进度最大值
+        progress_sk.max = duration
+
         // 更新播放进度
         startUpdateProgress()
 
@@ -140,7 +179,10 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
     @SuppressLint("SetTextI18n")
     private fun updateProgress(pro: Int) {
         // 更新进度数值
-        progress.text = StringUtil.parseDuration(pro)+"/"+StringUtil.parseDuration(duration)
+        progress.text = StringUtil.parseDuration(pro) + "/" + StringUtil.parseDuration(duration)
+
+        // 更新进度条
+        progress_sk.progress = pro
     }
 
 
@@ -184,5 +226,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
         unbindService(conn)
         // 反注册
         EventBus.getDefault().unregister(this)
+        // 清空handler发送的所有消息
+        handler.removeCallbacksAndMessages(null)
     }
 }
