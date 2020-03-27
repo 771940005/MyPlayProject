@@ -3,6 +3,7 @@ package com.smt.myplaytest.service
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
@@ -28,7 +29,7 @@ class AudioService : Service() {
 
     var mode = MODE_ALL // 播放模式
 
-    val sp by lazy { getSharedPreferences("config", Context.MODE_PRIVATE) }
+    val sp: SharedPreferences by lazy { getSharedPreferences("config", Context.MODE_PRIVATE) }
     override fun onCreate() {
         super.onCreate()
         // 获取播放模式
@@ -56,6 +57,42 @@ class AudioService : Service() {
 
     inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
+
+        /**
+         * 播放上一曲
+         */
+        override fun playPre() {
+            list?.let {
+                // 获取要播放歌曲position
+                when (mode) {
+                    MODE_RANDOM -> list?.let { position = Random.nextInt(it.size - 1) }
+                    else -> {
+                        if (position == 0) {
+                            position = it.size - 1
+                        } else {
+                            position--
+                        }
+                    }
+                }
+                // playitem
+                playItem()
+            }
+        }
+
+        /**
+         * 播放下一曲
+         */
+        override fun playNext() {
+            list?.let {
+                // 获取要播放歌曲position
+                when (mode) {
+                    MODE_RANDOM -> list?.let { position = Random.nextInt(it.size - 1) }
+                    else -> position = (position + 1) % it.size
+                }
+                // playitem
+                playItem()
+            }
+        }
 
         /**
          * 获取播放模式

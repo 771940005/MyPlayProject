@@ -55,6 +55,10 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
 
         // 播放模式点击事件
         mode.setOnClickListener(this)
+
+        // 上一曲和下一曲
+        pre.setOnClickListener(this)
+        next.setOnClickListener(this)
     }
 
 
@@ -89,6 +93,8 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         when (v?.id) {
             R.id.state -> updatePlayState()
             R.id.mode -> updatePlayMode()
+            R.id.pre -> iService?.playPre()
+            R.id.next -> iService?.playNext()
         }
 
     }
