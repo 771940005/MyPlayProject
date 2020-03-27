@@ -8,14 +8,14 @@ import android.os.IBinder
 import com.smt.myplaytest.model.AudioBean
 
 /**
- *描述:
+ *描述:播放器service
  */
 class AudioService : Service() {
 
     var list: ArrayList<AudioBean>? = null
     var position: Int = 0
     var mediaPlayer: MediaPlayer? = null
-    val binder by lazy { AudioBinder() }
+    private val binder by lazy { AudioBinder() }
 
     override fun onCreate() {
         super.onCreate()
@@ -29,14 +29,14 @@ class AudioService : Service() {
 
         // 开始播放音乐
         binder.playItem()
-        return  super.onStartCommand(intent, flags, startId)
+        return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return binder
     }
 
-    inner class AudioBinder : Binder(), MediaPlayer.OnPreparedListener {
+    inner class AudioBinder : Binder(),Iservice, MediaPlayer.OnPreparedListener {
 
         override fun onPrepared(mp: MediaPlayer?) {
             mediaPlayer?.start()

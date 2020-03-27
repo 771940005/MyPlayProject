@@ -14,9 +14,7 @@ import com.smt.myplaytest.adapter.VbangAdapter
 import com.smt.myplaytest.base.BaseFragment
 import com.smt.myplaytest.model.AudioBean
 import com.smt.myplaytest.ui.activity.AudioPlayerActivity
-import com.smt.myplaytest.util.CursorUtil
 import kotlinx.android.synthetic.main.fragment_vbang.*
-import org.jetbrains.anko.alert
 
 /**
  *@author hjy
