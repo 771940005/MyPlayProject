@@ -43,6 +43,30 @@ class AudioService : Service() {
 
     inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener {
 
+        /**
+         * 更新播放状态
+         */
+        override fun updatePlayState() {
+            // 获取当前播放状态
+            val isPlaying =isPlaying()
+
+            // 切换播放状态
+            isPlaying?.let {
+                if (isPlaying){
+                    // 播放 -> 暂停
+                    mediaPlayer?.pause()
+                }else{
+                    // 暂停 -> 播放
+                    mediaPlayer?.start()
+                }
+            }
+
+        }
+
+        override fun isPlaying(): Boolean? {
+            return mediaPlayer?.isPlaying
+        }
+
         override fun onPrepared(mp: MediaPlayer?) {
             mediaPlayer?.start()
         }
