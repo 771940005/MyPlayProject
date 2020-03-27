@@ -3,6 +3,7 @@ package com.smt.myplaytest.ui.activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.ServiceConnection
+import android.graphics.drawable.AnimationDrawable
 import android.os.IBinder
 import android.view.View
 import com.smt.myplaytest.R
@@ -12,6 +13,7 @@ import com.smt.myplaytest.service.AudioService
 import com.smt.myplaytest.service.Iservice
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_music_player_bottom.*
+import kotlinx.android.synthetic.main.activity_music_player_middle.*
 import kotlinx.android.synthetic.main.activity_music_player_top.*
 
 /**
@@ -22,6 +24,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
     private val conn by lazy { AudioConnection() }
 
     var audioBean: AudioBean? = null
+    var drawable: AnimationDrawable? = null
 
     override fun getLayoutId(): Int {
         return R.layout.activity_audio
@@ -30,6 +33,8 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
     override fun initListener() {
         // 播放状态切换
         state.setOnClickListener(this)
+
+        back.setOnClickListener { finish() }
     }
 
     override fun onClick(v: View?) {
@@ -63,9 +68,13 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
             if (isPlaying) {
                 // 播放
                 state.setImageResource(R.drawable.selector_btn_audio_play)
+                // 开始播放动画
+                drawable?.start()
             } else {
                 // 暂停
                 state.setImageResource(R.drawable.selector_btn_audio_pause)
+                // 停止播放动画
+                drawable?.stop()
             }
         }
 
@@ -86,6 +95,10 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
 
         // 更新播放状态按钮
         updatePlayStateBtn()
+
+        // 动画处理
+        drawable = audio_anim.drawable as AnimationDrawable
+        drawable?.start()
     }
 
 
