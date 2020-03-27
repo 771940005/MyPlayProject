@@ -7,6 +7,7 @@ import android.os.Binder
 import android.os.IBinder
 import com.smt.myplaytest.model.AudioBean
 import de.greenrobot.event.EventBus
+import kotlin.random.Random
 
 /**
  *描述:播放器service
@@ -17,6 +18,11 @@ class AudioService : Service() {
     var position: Int = 0
     var mediaPlayer: MediaPlayer? = null
     private val binder by lazy { AudioBinder() }
+
+    val MODE_ALL = 1 // 列表循环
+    val MODE_SINGLE = 2 // 单曲循环
+    val MODE_RANDOM = 3 // 随机播放
+    var mode = MODE_ALL // 播放模式
 
     override fun onCreate() {
         super.onCreate()
@@ -42,7 +48,37 @@ class AudioService : Service() {
         return binder
     }
 
-    inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener {
+    inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener,
+        MediaPlayer.OnCompletionListener {
+
+        /**
+         * 歌曲播放完成之后回调
+         */
+        override fun onCompletion(mp: MediaPlayer?) {
+            // 自动播放下一曲
+            autoPlayNext()
+        }
+
+        /**
+         * 根据播放模式自动播放下一曲
+         */
+        private fun autoPlayNext() {
+            when (mode) {
+                // 列表循环
+                MODE_ALL -> {
+                    //                    // 如果是最后一曲，返回到第一曲
+                    //                    if (position==list.size-1){
+                    //                        position = 0
+                    //                    }else{
+                    //                        position ++
+                    //                    }
+                    list?.let { position = (position + 1) % it.size }
+                }
+                // 随机播放
+                MODE_RANDOM -> list?.let { position = Random.nextInt(it.size) }
+            }
+            playItem()
+        }
 
         /**
          * 跳转到当前进度播放
@@ -108,6 +144,7 @@ class AudioService : Service() {
             mediaPlayer = MediaPlayer()
             mediaPlayer?.let {
                 it.setOnPreparedListener(this)
+                it.setOnCompletionListener(this)
                 it.setDataSource(list?.get(position)?.data)
                 it.prepareAsync()
             }
