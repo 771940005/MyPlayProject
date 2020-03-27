@@ -9,8 +9,10 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Message
 import android.view.View
+import android.widget.AdapterView
 import android.widget.SeekBar
 import com.smt.myplaytest.R
+import com.smt.myplaytest.adapter.PopAdapter
 import com.smt.myplaytest.base.BaseActivity
 import com.smt.myplaytest.model.AudioBean
 import com.smt.myplaytest.service.AudioService
@@ -25,7 +27,9 @@ import kotlinx.android.synthetic.main.activity_music_player_top.*
 /**
  * 描述:
  */
-class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeekBarChangeListener {
+class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeekBarChangeListener,
+    AdapterView.OnItemClickListener {
+
 
     private val conn by lazy { AudioConnection() }
 
@@ -63,6 +67,14 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
 
         // 播放列表
         playlist.setOnClickListener(this)
+    }
+
+    /**
+     * 弹出的播放列表条目点击事件
+     */
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        // 播放当前的歌曲
+        iService?.playPosition(position)
     }
 
 
@@ -103,14 +115,23 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         }
     }
 
+
     /**
      * 显示播放列表
      */
     private fun showPlayList() {
-        // 获取底部高度
-        val bottomH = audio_player_bottom.height
-        val popWindow = PlayListPopWindow(this)
-        popWindow.showAsDropDown(audio_player_bottom,0,-bottomH)
+
+        val list = iService?.getPlayList()
+        list?.let {
+
+            // 创建adapter
+            val adapter = PopAdapter(list)
+
+            // 获取底部高度
+            val bottomH = audio_player_bottom.height
+            val popWindow = PlayListPopWindow(this, adapter,this)
+            popWindow.showAsDropDown(audio_player_bottom, 0, -bottomH)
+        }
     }
 
 
@@ -125,6 +146,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         updatePlayModeBtn()
     }
 
+
     /**
      * 根据播放模式修改播放模式图标
      */
@@ -134,15 +156,16 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
             val model: Int = it.getPlayMode()
 
             // 设置图标
-            when(model){
-                AudioService.MODE_ALL->mode.setImageResource(R.drawable.selector_btn_playmode_order)
-                AudioService.MODE_SINGLE->mode.setImageResource(R.drawable.selector_btn_playmode_single)
-                AudioService.MODE_RANDOM->mode.setImageResource(R.drawable.selector_btn_playmode_random)
+            when (model) {
+                AudioService.MODE_ALL -> mode.setImageResource(R.drawable.selector_btn_playmode_order)
+                AudioService.MODE_SINGLE -> mode.setImageResource(R.drawable.selector_btn_playmode_single)
+                AudioService.MODE_RANDOM -> mode.setImageResource(R.drawable.selector_btn_playmode_random)
 
             }
         }
 
     }
+
 
     /**
      * 更新播放状态
@@ -154,6 +177,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         // 更新播放状态图标
         updatePlayStateBtn()
     }
+
 
     /**
      * 根据播放状态 更新图标
@@ -183,6 +207,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         }
 
     }
+
 
     /**
      * 接收eventbus
@@ -218,6 +243,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
 
     }
 
+
     /**
      * 开始更新进度
      */
@@ -231,6 +257,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         // 定时获取进度
         handler.sendEmptyMessageDelayed(MSG_PROGRESS, 1000)
     }
+
 
     /**
      * 根据当前进度数据更新界面
@@ -261,7 +288,9 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
 
     }
 
+
     var iService: Iservice? = null
+
 
     inner class AudioConnection : ServiceConnection {
         /**

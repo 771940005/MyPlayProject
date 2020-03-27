@@ -1,5 +1,7 @@
 package com.smt.myplaytest.service
 
+import com.smt.myplaytest.model.AudioBean
+
 /**
  * 描述:
  */
@@ -14,5 +16,7 @@ interface Iservice {
     fun getPlayMode(): Int
     fun playPre()
     fun playNext()
+    fun getPlayList(): List<AudioBean>?
+    fun playPosition(p2: Int)
 
 }

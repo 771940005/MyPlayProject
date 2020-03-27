@@ -63,6 +63,21 @@ class AudioService : Service() {
         MediaPlayer.OnCompletionListener {
 
         /**
+         * 播放当前位置的歌曲
+         */
+        override fun playPosition(p2: Int) {
+            this@AudioService.position = p2
+            playItem()
+        }
+
+        /**
+         * 获取播放集合
+         */
+        override fun getPlayList(): List<AudioBean>? {
+            return list
+        }
+
+        /**
          * 播放上一曲
          */
         override fun playPre() {
