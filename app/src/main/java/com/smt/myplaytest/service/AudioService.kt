@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
 import com.smt.myplaytest.model.AudioBean
+import de.greenrobot.event.EventBus
 
 /**
  *描述:播放器service
@@ -68,7 +69,18 @@ class AudioService : Service() {
         }
 
         override fun onPrepared(mp: MediaPlayer?) {
+            // 播放音乐
             mediaPlayer?.start()
+            // 通知界面更新
+            notifyUpdateUi()
+        }
+
+        /**
+         * 通知界面更新
+         */
+        private fun notifyUpdateUi(){
+            // 发送端
+            EventBus.getDefault().post(list?.get(position))
         }
 
         fun playItem() {

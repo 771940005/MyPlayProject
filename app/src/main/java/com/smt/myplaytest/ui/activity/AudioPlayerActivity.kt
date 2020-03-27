@@ -7,9 +7,12 @@ import android.os.IBinder
 import android.view.View
 import com.smt.myplaytest.R
 import com.smt.myplaytest.base.BaseActivity
+import com.smt.myplaytest.model.AudioBean
 import com.smt.myplaytest.service.AudioService
 import com.smt.myplaytest.service.Iservice
+import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_music_player_bottom.*
+import kotlinx.android.synthetic.main.activity_music_player_top.*
 
 /**
  * 描述:
@@ -17,6 +20,8 @@ import kotlinx.android.synthetic.main.activity_music_player_bottom.*
 class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
 
     private val conn by lazy { AudioConnection() }
+
+    var audioBean: AudioBean? = null
 
     override fun getLayoutId(): Int {
         return R.layout.activity_audio
@@ -66,7 +71,28 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
 
     }
 
+    /**
+     * 接收eventbus
+     */
+    fun onEventMainThread(itemBean: AudioBean) {
+        // 记录播放歌曲bean
+        this.audioBean = itemBean
+
+        // 歌曲名称
+        audio_title.text = itemBean.display_name
+
+        // 歌手名称
+        artist.text = itemBean.artist
+
+        // 更新播放状态按钮
+        updatePlayStateBtn()
+    }
+
+
     override fun initData() {
+        // 注册EvenBus
+        EventBus.getDefault().register(this)
+
         // 通过audioservice播放音乐
         val intent = intent
         intent.setClass(this, AudioService::class.java)
@@ -101,5 +127,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener {
         super.onDestroy()
         // 解绑服务
         unbindService(conn)
+        // 反注册
+        EventBus.getDefault().unregister(this)
     }
 }
