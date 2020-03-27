@@ -19,9 +19,12 @@ class AudioService : Service() {
     var mediaPlayer: MediaPlayer? = null
     private val binder by lazy { AudioBinder() }
 
-    val MODE_ALL = 1 // 列表循环
-    val MODE_SINGLE = 2 // 单曲循环
-    val MODE_RANDOM = 3 // 随机播放
+    companion object {
+        const val MODE_ALL = 1 // 列表循环
+        const val MODE_SINGLE = 2 // 单曲循环
+        const val MODE_RANDOM = 3 // 随机播放
+    }
+
     var mode = MODE_ALL // 播放模式
 
     override fun onCreate() {
@@ -50,6 +53,24 @@ class AudioService : Service() {
 
     inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
+
+        /**
+         * 获取播放模式
+         */
+        override fun getPlayMode(): Int {
+            return mode
+        }
+
+        /**
+         * 修改播放模式
+         */
+        override fun updatePlayMode() {
+            when (mode) {
+                MODE_ALL -> mode = MODE_SINGLE
+                MODE_SINGLE -> mode = MODE_RANDOM
+                MODE_RANDOM -> mode = MODE_ALL
+            }
+        }
 
         /**
          * 歌曲播放完成之后回调

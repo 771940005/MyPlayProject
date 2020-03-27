@@ -51,6 +51,9 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
 
         // 进度条变化监听
         progress_sk.setOnSeekBarChangeListener(this)
+
+        // 播放模式点击事件
+        mode.setOnClickListener(this)
     }
 
 
@@ -84,6 +87,37 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.state -> updatePlayState()
+            R.id.mode -> updatePlayMode()
+        }
+
+    }
+
+    /**
+     * 更新播放模式
+     */
+    private fun updatePlayMode() {
+        // 修改service中的mode
+        iService?.updatePlayMode()
+
+        // 修改界面模式图标
+        updatePlayModeBtn()
+    }
+
+    /**
+     * 根据播放模式修改播放模式图标
+     */
+    private fun updatePlayModeBtn() {
+        iService?.let {
+            // 获取播放模式
+            val model: Int = it.getPlayMode()
+
+            // 设置图标
+            when(model){
+                AudioService.MODE_ALL->mode.setImageResource(R.drawable.selector_btn_playmode_order)
+                AudioService.MODE_SINGLE->mode.setImageResource(R.drawable.selector_btn_playmode_single)
+                AudioService.MODE_RANDOM->mode.setImageResource(R.drawable.selector_btn_playmode_random)
+
+            }
         }
 
     }
