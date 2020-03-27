@@ -3,9 +3,7 @@ package com.smt.myplaytest.widget
 import android.content.Context
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.ListView
@@ -16,8 +14,20 @@ import org.jetbrains.anko.find
 /**
  *描述:PopupWindow 底部弹出框
  */
-class PlayListPopWindow(context: Context, adapter: BaseAdapter,listener:AdapterView.OnItemClickListener) : PopupWindow() {
+class PlayListPopWindow(
+    context: Context,
+    adapter: BaseAdapter,
+    listener: AdapterView.OnItemClickListener,
+    val window: Window
+) : PopupWindow() {
+
+    // 记录当前应用程序窗体透明度
+    var alpha: Float = 0f
+
     init {
+        // 记录当前窗体的透明度
+        alpha = window.attributes.alpha
+
         // 设置布局
         val view = LayoutInflater.from(context).inflate(R.layout.pop_playlist, null, false)
 
@@ -50,5 +60,23 @@ class PlayListPopWindow(context: Context, adapter: BaseAdapter,listener:AdapterV
 
         // 处理popwindow动画
         animationStyle = R.style.pop
+    }
+
+    override fun showAsDropDown(anchor: View?, xoff: Int, yoff: Int, gravity: Int) {
+        super.showAsDropDown(anchor, xoff, yoff, gravity)
+        // popwindow已经显示
+        val attributes = window.attributes
+        attributes.alpha = 0.3f
+
+        // 设置到应用程序窗体上
+        window.attributes = attributes
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        // popwindows 隐藏   恢复应用程序窗体透明度
+        val attributes = window.attributes
+        attributes.alpha = alpha
+        window.attributes = attributes
     }
 }
