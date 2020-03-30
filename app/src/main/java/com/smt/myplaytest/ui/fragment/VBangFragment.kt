@@ -24,7 +24,7 @@ import kotlinx.android.synthetic.main.fragment_vbang.*
 @Suppress("DEPRECATION")
 class VBangFragment : BaseFragment() {
 
-
+    var adapter: VbangAdapter? = null
     override fun initView(): View? {
         return View.inflate(context, R.layout.fragment_vbang, null)
     }
@@ -122,7 +122,7 @@ class VBangFragment : BaseFragment() {
         )
     }
 
-    var adapter: VbangAdapter? = null
+
     override fun initListener(view: View) {
         adapter = VbangAdapter(context, null)
         listView.adapter = adapter

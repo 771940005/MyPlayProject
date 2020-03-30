@@ -1,2 +1,2 @@
-include ':app', ':ServiceDemo'
+include ':app', ':ServiceDemo', ':notificationdemo'
 rootProject.name='MyPlayTest'

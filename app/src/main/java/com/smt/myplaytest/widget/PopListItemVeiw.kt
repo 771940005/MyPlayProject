@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_pop.view.*
 /**
  *描述:
  */
-class PopListItemVeiw : RelativeLayout {
+class PopListItemView : RelativeLayout {
     fun setData(data: AudioBean) {
         // title
         title.text = data.display_name

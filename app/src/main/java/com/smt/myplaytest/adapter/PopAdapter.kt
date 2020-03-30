@@ -4,7 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import com.smt.myplaytest.model.AudioBean
-import com.smt.myplaytest.widget.PopListItemVeiw
+import com.smt.myplaytest.widget.PopListItemView
 
 /**
  *描述:播放列表popwindow的适配器
@@ -13,11 +13,11 @@ class PopAdapter(val list: List<AudioBean>) : BaseAdapter() {
 
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        var itemView: PopListItemVeiw? = null
-        if (convertView == null) {
-            itemView = PopListItemVeiw(parent?.context)
+        var itemView: PopListItemView? = null
+        itemView = if (convertView == null) {
+            PopListItemView(parent?.context)
         } else {
-            itemView = convertView as PopListItemVeiw
+            convertView as PopListItemView
         }
         itemView.setData(list[position])
         return itemView

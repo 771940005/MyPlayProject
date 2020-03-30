@@ -25,14 +25,14 @@ import kotlinx.android.synthetic.main.activity_music_player_middle.*
 import kotlinx.android.synthetic.main.activity_music_player_top.*
 
 /**
- * 描述:
+ * 描述:音乐播放器
  */
 class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeekBarChangeListener,
     AdapterView.OnItemClickListener {
 
 
     private val conn by lazy { AudioConnection() }
-
+    var iService: Iservice? = null
     private var audioBean: AudioBean? = null
     var drawable: AnimationDrawable? = null
     private var duration: Int = 0
@@ -280,7 +280,7 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
         val intent = intent
         intent.setClass(this, AudioService::class.java)
 
-        // 先绑定服务
+        // 在这里一定要先绑定服务
         bindService(intent, conn, Context.BIND_AUTO_CREATE)
 
         // 再开启服务
@@ -289,9 +289,9 @@ class AudioPlayerActivity : BaseActivity(), View.OnClickListener, SeekBar.OnSeek
     }
 
 
-    var iService: Iservice? = null
-
-
+    /**
+     * service连接
+     */
     inner class AudioConnection : ServiceConnection {
         /**
          * 意外断开连接时

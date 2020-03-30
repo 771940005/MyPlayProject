@@ -1,13 +1,22 @@
 package com.smt.myplaytest.service
 
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.os.Binder
 import android.os.IBinder
+import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
+import com.smt.myplaytest.R
 import com.smt.myplaytest.model.AudioBean
+import com.smt.myplaytest.ui.activity.AudioPlayerActivity
+import com.smt.myplaytest.ui.activity.MainActivity
 import de.greenrobot.event.EventBus
 import kotlin.random.Random
 
@@ -20,6 +29,13 @@ class AudioService : Service() {
     var position: Int = -2  // 正在播放的position
     var mediaPlayer: MediaPlayer? = null
     private val binder by lazy { AudioBinder() }
+
+    val FROM_PRE = 1
+    val FROM_NEXT = 2
+    val FROM_STATE = 3
+    val FROM_CONTENT = 4
+
+    var manager: NotificationManager? = null
 
     companion object {
         const val MODE_ALL = 1 // 列表循环
@@ -58,6 +74,7 @@ class AudioService : Service() {
     override fun onBind(intent: Intent?): IBinder? {
         return binder
     }
+
 
     inner class AudioBinder : Binder(), Iservice, MediaPlayer.OnPreparedListener,
         MediaPlayer.OnCompletionListener {
@@ -203,6 +220,7 @@ class AudioService : Service() {
 
         }
 
+
         override fun isPlaying(): Boolean? {
             return mediaPlayer?.isPlaying
         }
@@ -212,7 +230,119 @@ class AudioService : Service() {
             mediaPlayer?.start()
             // 通知界面更新
             notifyUpdateUi()
+            // 显示通知
+            showNotification()
         }
+
+
+        /**
+         * 显示通知
+         */
+        private fun showNotification() {
+            manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            manager?.notify(1, getNotification())
+        }
+
+        /**
+         * 创建notification
+         * Notification 3.0
+         * Notification.Builder 3.0
+         *
+         */
+        private fun getNotification(): Notification? {
+            val bitmap = BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher)
+            val notification = NotificationCompat.Builder(this@AudioService)
+                .setTicker("正在播放歌曲${list?.get(position)?.display_name}")
+                .setSmallIcon(R.mipmap.ic_launcher)
+
+                //自定义通知view
+                .setCustomContentView(getRemoteViews())
+                .setWhen(System.currentTimeMillis())
+                .setOngoing(true)//设置不能滑动删除通知
+                .setContentIntent(getPendingIntent())//通知栏主体点击事件
+                .build()
+            return notification
+        }
+
+        /**
+         * 创建通知自定义view
+         */
+        private fun getRemoteViews(): RemoteViews? {
+            val remoteViews = RemoteViews(packageName, R.layout.notification)
+            //修改标题和内容
+            remoteViews.setTextViewText(R.id.title, list?.get(position)?.display_name)
+            remoteViews.setTextViewText(R.id.artist, list?.get(position)?.artist)
+            //处理上一曲 下一曲  状态点击事件
+            remoteViews.setOnClickPendingIntent(R.id.pre, getPrePendingIntent())
+            remoteViews.setOnClickPendingIntent(R.id.state, getStatePendingIntent())
+            remoteViews.setOnClickPendingIntent(R.id.next, getNextPendingIntent())
+            return remoteViews
+        }
+
+        /**
+         * 下一曲点击事件
+         */
+        private fun getNextPendingIntent(): PendingIntent? {
+            val intent = Intent(this@AudioService, MainActivity::class.java)//点击主体进入当前界面中
+            intent.putExtra("from", FROM_NEXT)
+            val pendingIntent =
+                PendingIntent.getService(
+                    this@AudioService,
+                    2,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            return pendingIntent
+        }
+
+        /**
+         * 播放暂停按钮点击事件
+         */
+        private fun getStatePendingIntent(): PendingIntent? {
+            val intent = Intent(this@AudioService, MainActivity::class.java)//点击主体进入当前界面中
+            intent.putExtra("from", FROM_STATE)
+            val pendingIntent =
+                PendingIntent.getService(
+                    this@AudioService,
+                    3,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            return pendingIntent
+        }
+
+        /**
+         * 上一曲点击事件
+         */
+        private fun getPrePendingIntent(): PendingIntent? {
+            val intent = Intent(this@AudioService, MainActivity::class.java)//点击主体进入当前界面中
+            intent.putExtra("from", FROM_PRE)
+            val pendingIntent =
+                PendingIntent.getService(
+                    this@AudioService,
+                    4,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            return pendingIntent
+        }
+
+        /**
+         * 通知栏主体点击事件
+         */
+        private fun getPendingIntent(): PendingIntent? {
+            val intent = Intent(this@AudioService, AudioPlayerActivity::class.java)//点击主体进入当前界面中
+            intent.putExtra("from", FROM_CONTENT)
+            val pendingIntent =
+                PendingIntent.getActivity(
+                    this@AudioService,
+                    1,
+                    intent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+            return pendingIntent
+        }
+
 
         /**
          * 通知界面更新
@@ -240,4 +370,5 @@ class AudioService : Service() {
 
         }
     }
+
 }
